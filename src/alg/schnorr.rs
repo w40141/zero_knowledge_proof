@@ -50,7 +50,7 @@ impl Proofer {
     }
 
     pub fn z(&self, e: i64) -> i64 {
-        self.r() + (e * self.x % self.p)
+        (self.r() + (e * self.x)) % self.p
     }
 }
 
@@ -87,8 +87,25 @@ impl Checker {
     }
 
     pub fn e(&self) -> i64 {
-        let mut rng = rand::thread_rng();
-        let e: i64 = rng.gen();
-        e
+        match self.e {
+            Some(i) => i,
+            None => {
+                let mut rng = rand::thread_rng();
+                let e: i64 = rng.gen_range(0..=self.q() - 1);
+                e
+            }
+        }
+    }
+
+    pub fn is_correct(&self, y: i64, c: i64, z: i64) -> bool {
+        let left = 1;
+        for i in 1..z {
+            let left = left * self.g % self.p;
+        }
+        let right = c;
+        for i in 1..self.e() {
+            let right = right * y % self.p;
+        }
+        left == right
     }
 }
